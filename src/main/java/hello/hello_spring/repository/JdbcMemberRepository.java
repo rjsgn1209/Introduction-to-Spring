@@ -2,6 +2,7 @@ package hello.hello_spring.repository;
 
 import hello.hello_spring.domain.Member;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.jdbc.support.JdbcUtils;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -33,6 +34,8 @@ public class JdbcMemberRepository implements MemberRepository {
             pstmt = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
             pstmt.setString(1, member.getName());
+
+            pstmt.executeUpdate();
             rs = pstmt.getGeneratedKeys();
 
             if (rs.next()) {
@@ -147,27 +150,10 @@ public class JdbcMemberRepository implements MemberRepository {
     }
 
     private void close(Connection conn, PreparedStatement pstmt, ResultSet rs) {
-        try {
-            if (rs != null) {
-                rs.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (pstmt != null) {
-                pstmt.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            if (conn != null) {
-                conn.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        JdbcUtils.closeResultSet(rs);
+        JdbcUtils.closeStatement(pstmt);
+
+        DataSourceUtils.releaseConnection(conn, dataSource);
     }
 
     private void close(Connection conn) throws SQLException {
