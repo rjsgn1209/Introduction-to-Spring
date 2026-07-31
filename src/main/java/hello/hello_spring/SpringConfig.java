@@ -14,28 +14,34 @@ import javax.swing.*;
 @Configuration
 public class SpringConfig {
 
-    private DataSource dataSource;
-    private EntityManager entityManager;
+    //    private DataSource dataSource;
+//    private EntityManager entityManager;
+//
+//    @Autowired
+//    public SpringConfig(EntityManager entityManager){
+//        this.entityManager = entityManager;
+//    }
+//
+//    public SpringConfig(DataSource dataSource){
+//        this.dataSource = dataSource;
+//    }
+    private MemberRepository memberRepository;
 
-    @Autowired
-    public SpringConfig(EntityManager entityManager){
-        this.entityManager = entityManager;
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
     }
 
-    public SpringConfig(DataSource dataSource){
-        this.dataSource = dataSource;
-    }
 
     @Bean
     public MemberService memberService() {
-        return new MemberService(memberRepository());
+        return new MemberService(memberRepository);
     }
 
-    @Bean
-    public MemberRepository memberRepository() {
-//        return new MemoryMemberRepository();
-//        return new JdbcMemberRepository(dataSource);
-//        return new JdbcTemplateMemberRepository(dataSource);
-        return new JpaMemberRepository(entityManager);
-    }
+//    @Bean
+//    public MemberRepository memberRepository() {
+////        return new MemoryMemberRepository();
+////        return new JdbcMemberRepository(dataSource);
+////        return new JdbcTemplateMemberRepository(dataSource);
+//        return new JpaMemberRepository(entityManager);
+//    }
 }
